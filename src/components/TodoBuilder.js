@@ -9,10 +9,12 @@ class TodoBuilder extends Component{
             todos: [],
             msg: '',
             date: '',
+            isCompleted: false,
             msgIsEmpty: false,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleComplete = this.handleComplete.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
     handleSubmit(e){
@@ -24,6 +26,7 @@ class TodoBuilder extends Component{
                     msg: this.state.msg,
                     date: this.state.date, 
                     id: Date.now(),
+                    isCompleted: false,
                 });
             this.setState({
                 todos: todosCopy,
@@ -39,6 +42,19 @@ class TodoBuilder extends Component{
             [e.target.name]: e.target.value,
             msgIsEmpty: false,
         });
+    }
+    handleComplete(id){
+        let todosCopy = this.state.todos.slice();
+        todosCopy = todosCopy.map(todo => {
+            if (todo.id === id) {
+                todo.isCompleted = !todo.isCompleted;
+            }
+            return todo;
+        });
+        this.setState({
+            todos: todosCopy,
+        });
+        console.log(id);
     }
     handleDelete(id){
         const todosCopy = this.state.todos.filter(item => item.id !== id);
@@ -70,7 +86,7 @@ class TodoBuilder extends Component{
                         ><b>Add</b></button>
                     </form>
                     <Search/>
-                    <TodoList todos={this.state.todos} handleDelete={this.handleDelete}/>
+                    <TodoList todos={this.state.todos} handleDelete={this.handleDelete} handleComplete={this.handleComplete}/>
                 </div>
             </div>
         )

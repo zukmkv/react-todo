@@ -89,11 +89,16 @@ code {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .todo__text {
   word-wrap: break-word;
   max-width: 520px;
+}
+
+.todo__text--completed {
+  text-decoration: line-through;
 }
 
 .todo__date {
@@ -102,7 +107,12 @@ code {
 }
 
 .todo__delete {
+  text-decoration: none;
   cursor: pointer;
   user-select: none;
+}
+
+.todo--completed {
+  background-color: green;
 }
 
