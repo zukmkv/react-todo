@@ -5,7 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e6d4df;
+  background-color: #392e5c;
+  color: #fff;
 }
 
 code {
@@ -23,9 +24,10 @@ code {
   height: 30px;
   margin-right: 5px;
   padding: 8px;
-  background-color: #f2f2f2;
+  background: rgba(0,0,0,0.2);
   border: 1px solid black;
   font-size: 14px;
+  color: #fff;
 }
 
 .input--date {
@@ -52,12 +54,50 @@ code {
 }
 
 .btn {
-  height: 45px;
+  height: 47px;
   width: 100px;
   margin-left: 15px;
   cursor: pointer;
+  background-color: #a813f1;
+  border: 1px solid black;
+  color:#dad8de;
+  font-size: 20px;
+}
+
+.todo__list {
+  width: 650px;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .todo {
-  background-color: tomato;
+  display: flex;
+  justify-content: space-between;
+  background-color: #423a6f;
+  text-align: left;
+  padding: 8px;
+  margin-bottom: 4px;
+  border: 1px solid black;
+  border-radius: 9px;
 }
+
+.todo__content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo__text {
+  word-wrap: break-word;
+  max-width: 520px;
+}
+
+.todo__date {
+  min-width: 92px;
+  margin-left: 8px;
+}
+
+.todo__delete {
+  cursor: pointer;
+}
+

@@ -49,11 +49,11 @@ class TodoBuilder extends Component{
                         <button 
                             onClick={this.handleSubmit}
                             className='btn'
-                        >Add</button>
+                        ><b>Add</b></button>
                     </form>
                     <Search/>
+                    <TodoList todos={this.state.todos}/>
                 </div>
-                <TodoList todos={this.state.todos}/>
             </div>
         )
     }
