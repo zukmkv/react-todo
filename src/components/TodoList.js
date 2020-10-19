@@ -3,7 +3,7 @@ import React from 'react';
 function TodoList(props) {
     const todos = props.todos;
     const listTodos = todos.map(todo => 
-        <li>
+        <li className={'todo'}>
             <div>{todo.msg}</div>
             <div>{todo.date}</div>
         </li>

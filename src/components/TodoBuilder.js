@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
 import TodoList from './TodoList';
-
-const styles = {
-    input: {
-        width: 200,
-        height: 20,
-        marginLeft: 5,
-    }   
-}
+import Search from './Search';
 
 class TodoBuilder extends Component{
     constructor(props){
@@ -37,22 +30,31 @@ class TodoBuilder extends Component{
     }
     render(){
         return(
-            <form>
-                <input 
-                    name="msg"
-                    style={styles.input} 
-                    type="text"
-                    onChange={this.handleChange}
-                />
-                <input 
-                    name="date"
-                    style={styles.input} 
-                    type="date"
-                    onChange={this.handleChange}
-                />
-                <button onClick={this.handleSubmit}>Add</button>
+            <div>
+                <div className='todoBuilder'>
+                    <form className='form'>
+                        <input 
+                            name="msg"
+                            className={'input'}
+                            type="text"
+                            onChange={this.handleChange}
+                        />
+                        <input 
+                            name="date"
+                            className={'input input--date'}
+                            type="date"
+                            onChange={this.handleChange}
+                        />
+                        
+                        <button 
+                            onClick={this.handleSubmit}
+                            className='btn'
+                        >Add</button>
+                    </form>
+                    <Search/>
+                </div>
                 <TodoList todos={this.state.todos}/>
-            </form>
+            </div>
         )
     }
 }
