@@ -10,22 +10,30 @@ class TodoBuilder extends Component{
             todos: [],
             msg: '',
             date: '',
+            msgIsEmpty: false,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
     handleSubmit(e){
         e.preventDefault();
-        const todosCopy = this.state.todos.slice();
-        todosCopy.push({msg: this.state.msg, date: this.state.date});
-        this.setState({
-            todos: todosCopy,
-            todosAmount: todosCopy.length,
-        });
+        if (this.state.msg.trim()) {
+            const todosCopy = this.state.todos.slice();
+            todosCopy.push({msg: this.state.msg, date: this.state.date});
+            this.setState({
+                todos: todosCopy,
+                todosAmount: todosCopy.length,
+            });
+        } else {
+            this.setState({
+                msgIsEmpty: true,
+            });
+        }
     }
     handleChange(e){
         this.setState({
             [e.target.name]: e.target.value,
+            msgIsEmpty: false,
         });
     }
     render(){
@@ -35,13 +43,13 @@ class TodoBuilder extends Component{
                     <form className='form'>
                         <input 
                             name="msg"
-                            className={'input'}
+                            className={this.state.msgIsEmpty ? 'input input--empty' : 'input'}
                             type="text"
                             onChange={this.handleChange}
                         />
                         <input 
                             name="date"
-                            className={'input input--date'}
+                            className='input input--date'
                             type="date"
                             onChange={this.handleChange}
                         />
