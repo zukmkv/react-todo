@@ -68,6 +68,25 @@ code {
   font-size: 20px;
 }
 
+.btn--sort {
+  width: 80px;
+  height: 25px;
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.arrows {
+  height: 10px;
+  padding: 0 5px 0 0;
+}
+
+.sortMenu {
+  display: flex;
+  justify-content: flex-end;
+  width: 650px;
+  margin-bottom: -8px;
+}
+
 .todo__list {
   width: 650px;
   list-style-type: none;

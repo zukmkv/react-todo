@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TodoList from './TodoList';
 import Search from './Search';
+import Sort from './Sort';
 
 const getTodos = () => JSON.parse(sessionStorage.getItem('todos'));
 const setTodos = todos => sessionStorage.setItem('todos', JSON.stringify(todos));
@@ -14,11 +15,16 @@ class TodoBuilder extends Component{
             date: '',
             isCompleted: false,
             msgIsEmpty: false,
+            sorted: {
+                byNumber: '',
+                byText: ''
+            }
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleComplete = this.handleComplete.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleSort = this.handleSort.bind(this);
     }
     handleSubmit(e){
         e.preventDefault();
@@ -67,6 +73,46 @@ class TodoBuilder extends Component{
         });
         setTodos(todosCopy);
     }
+    handleSort(e){
+        let todosCopy = this.state.todos.slice();
+        if ((e.target.id || e.target.parentNode.id) === 'text'){
+            if (this.state.sorted.byText === ('' || 'asc')) {
+                todosCopy.sort((a, b) => a.msg < b.msg ? 1 : -1); // desc
+                this.setState({
+                    todos: todosCopy,
+                    sorted: {
+                        byText: 'desc',
+                    },
+                });
+            } else {
+                todosCopy.sort((a,b) => a.msg > b.msg ? 1 : -1); // asc
+                this.setState({
+                    todos: todosCopy,
+                    sorted: {
+                        byText: 'asc',
+                    },
+                });
+            }
+        } else {
+            if (this.state.sorted.byNumber === ('' || 'asc')){
+                todosCopy.sort((a, b) => a.date < b.date ? 1 : -1); // desc
+                this.setState({
+                    todos: todosCopy,
+                    sorted: {
+                        byNumber: 'desc',
+                    },
+                });
+            } else {
+                todosCopy.sort((a, b) => a.date > b.date ? 1 : -1); // asc
+                this.setState({
+                    todos: todosCopy,
+                    sorted: {
+                        byNumber: 'asc',
+                    },
+                });
+            }
+        }
+    }
     render(){
         return(
             <div>
@@ -91,6 +137,7 @@ class TodoBuilder extends Component{
                         ><b>Add</b></button>
                     </form>
                     <Search/>
+                    <Sort todos={this.state.todos} handleSort={this.handleSort}/>
                     <TodoList todos={this.state.todos} handleDelete={this.handleDelete} handleComplete={this.handleComplete}/>
                 </div>
             </div>
