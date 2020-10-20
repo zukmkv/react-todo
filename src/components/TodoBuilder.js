@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import TodoList from './TodoList';
 import Search from './Search';
 
+const getTodos = () => JSON.parse(sessionStorage.getItem('todos'));
+const setTodos = todos => sessionStorage.setItem('todos', JSON.stringify(todos));
+
 class TodoBuilder extends Component{
     constructor(props){
         super(props);
         this.state = {
-            todos: [],
+            todos: (getTodos() || []),
             msg: '',
             date: '',
             isCompleted: false,
@@ -31,6 +34,7 @@ class TodoBuilder extends Component{
             this.setState({
                 todos: todosCopy,
             });
+            setTodos(todosCopy);
         } else {
             this.setState({
                 msgIsEmpty: true,
@@ -54,13 +58,14 @@ class TodoBuilder extends Component{
         this.setState({
             todos: todosCopy,
         });
-        console.log(id);
+        setTodos(todosCopy);
     }
     handleDelete(id){
         const todosCopy = this.state.todos.filter(item => item.id !== id);
         this.setState({
             todos: todosCopy,
         });
+        setTodos(todosCopy);
     }
     render(){
         return(
