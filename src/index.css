@@ -35,6 +35,11 @@ code {
   width: 125px;
 }
 
+.input--date-menu {
+  height: 15px;
+  background-color: #a813f1;
+}
+
 .input--search {
   margin-right: 0;
   width: 100%;
@@ -80,11 +85,20 @@ code {
   padding: 0 5px 0 0;
 }
 
-.sortMenu {
+.menu {
+  display: flex;
+  align-items: flex-end;
+}
+
+.menu__sort {
   display: flex;
   justify-content: flex-end;
-  width: 650px;
-  margin-bottom: -8px;
+  width: 325px;
+}
+
+.menu__filter {
+  display: flex;
+  width: 325px;
 }
 
 .todo__list {
@@ -134,4 +148,5 @@ code {
 .todo--completed {
   background-color: green;
 }
+
 
