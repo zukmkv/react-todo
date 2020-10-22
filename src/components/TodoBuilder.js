@@ -37,9 +37,10 @@ class TodoBuilder extends Component{
     isFiltered() {
         if (this.state.filterBy ||
             this.state.timePeriod.start !== '' || 
-            this.state.timePeriod.end !== this.maxPossibleDate){
+            this.state.timePeriod.end !== this.state.maxPossibleDate){
             return true;
         } else {
+            console.group(this.state.filterBy, this.state.timePeriod.start, this.state.timePeriod.end)
             return false;
         }
     }
@@ -119,7 +120,7 @@ class TodoBuilder extends Component{
     handleTimePeriod(e){
         let start = e.target.name === 'start' ? e.target.value : this.state.timePeriod.start;
         let end = e.target.name === 'end' 
-                ? (e.target.value !== '' ? e.target.value : this.maxPossibleDate) 
+                ? (e.target.value !== '' ? e.target.value : this.state.maxPossibleDate) 
                 : this.state.timePeriod.end;
         const todosCopy = this.state.filterBy ? this.state.filtered.slice() : this.state.todos.slice();
         const filtered = [];
