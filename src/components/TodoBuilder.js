@@ -21,7 +21,7 @@ class TodoBuilder extends Component{
             maxPossibleDate: '9999-12-31',
             timePeriod: {
                 start: '',
-                end: this.maxPossibleDate,
+                end: '9999-12-31',
             }
         }
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -103,6 +103,7 @@ class TodoBuilder extends Component{
         const filterBy = e.target.value;
         const filtered = [];
         this.state.todos.forEach(todo => {
+            console.log(todo.date)
             if (
                 todo.msg.includes(filterBy) &&
                 (todo.date >= this.state.timePeriod.start && todo.date <= this.state.timePeriod.end)
@@ -205,7 +206,7 @@ class TodoBuilder extends Component{
                     </form>
                     <Search handleChange={this.handleFilter}/>
                     <Menu 
-                        todos={this.isFiltered() ? this.state.filtered : this.state.todos}
+                        todos={this.isFiltered ? this.state.filtered : this.state.todos}
                         handleSort={this.handleSort}
                         handleTimePeriod={this.handleTimePeriod}
                     />
