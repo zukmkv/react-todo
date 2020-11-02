@@ -1,219 +1,165 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import TodoList from './TodoList';
 import Search from './Search';
 import Menu from './Menu';
 
-class TodoBuilder extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            todos: (this.getTodosFromStorage() || []),
-            msg: '',
-            date: '',
-            isCompleted: false,
-            msgIsEmpty: false,
-            sorted: {
-                byNumber: 'desc',
-                byText: 'desc'
-            },
-            filterBy: '',
-            maxPossibleDate: '9999-12-31',
-            timePeriod: {
-                start: '',
-                end: '9999-12-31',
-            }
-        }
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleComplete = this.handleComplete.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleSort = this.handleSort.bind(this);
-        this.handleFilter = this.handleFilter.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleTimePeriod = this.handleTimePeriod.bind(this);
-    }
-    getTodosFromStorage = () => JSON.parse(sessionStorage.getItem('todos'));
-    saveTodosInStorage = todos => sessionStorage.setItem('todos', JSON.stringify(todos));
-    shouldBeFiltered() {
-        if (this.state.filterBy ||
-            this.state.timePeriod.start !== '' || 
-            this.state.timePeriod.end !== this.state.maxPossibleDate){
+function TodoBuilder(){
+    const getTodosFromStorage = () => JSON.parse(sessionStorage.getItem('todos'));
+    const saveTodosInStorage = todos => sessionStorage.setItem('todos', JSON.stringify(todos));
+    const [todos, setTodos] = useState((getTodosFromStorage() || []));
+    const [msg, setMsg] = useState('');
+    const [date, setDate] = useState('');
+    const [msgIsEmpty, setMsgIsEmpty] = useState(false);
+    const [sorted, setSorted] = useState({byNumber: 'desc', byText: 'desc'});
+    const [filterBy, setFilterBy] = useState('');
+    const maxPossibleDate = '9999-12-31';
+    const [timePeriod, setTimePeriod] = useState({start: '', end: '9999-12-31'});
+
+    const shouldBeFiltered = () => {
+        if (filterBy ||
+            timePeriod.start !== '' || 
+            timePeriod.end !== maxPossibleDate){
             return true;
         } else {
             return false;
         }
     }
-    handleSubmit(e){
+    const handleSubmit = e => {
         e.preventDefault();
-        if (this.state.msg.trim()){
-            this.setState(state => {
-                let todos = [...state.todos];
-                todos.push(
+        if (msg.trim()){
+                let todosCopy = [...todos];
+                todosCopy.push(
                     {   
-                        msg: state.msg,
-                        date: state.date, 
+                        msg: msg,
+                        date: date, 
                         id: Date.now(),
                         isCompleted: false,
                     });
-                this.saveTodosInStorage(todos);
-                return { todos }
-            });
+                saveTodosInStorage(todosCopy);
+                setTodos(todosCopy);
         } else {
-            this.setState({
-                msgIsEmpty: true,
-            });
+            setMsgIsEmpty(true);
         }
     }
-    handleChange(e){
-        this.setState({
-            [e.target.name]: e.target.value,
-            msgIsEmpty: false,
-        });
+    const handleChange = e => {
+        if (e.target.name === 'msg') {
+            setMsg(e.target.value);
+        } else if (e.target.name === 'date'){
+            setDate(e.target.value);
+        }
     }
-    handleComplete(id){
-        this.setState(state => {
-            let todos = state.todos.map(todo => {
-                if (todo.id === id) {
-                    todo.isCompleted = !todo.isCompleted;
-                }
-                return todo;
-            });
-            this.saveTodosInStorage(todos);
-            return { todos }
+    const handleComplete = id => {
+        let todosCopy = todos.map(todo => {
+            if (todo.id === id) {
+                todo.isCompleted = !todo.isCompleted;
+            }
+            return todo;
         });
+        saveTodosInStorage(todosCopy);
+        setTodos(todosCopy);
     }
-    handleDelete(id){
-        this.setState(state => {
-            const todos = state.todos.filter(item => item.id !== id);
-            this.saveTodosInStorage(todos);
-            return { todos }
-        });
+    const handleDelete = id => {
+        const todosCopy = todos.filter(item => item.id !== id);
+        saveTodosInStorage(todosCopy);
+        setTodos(todosCopy);
     }
-    handleFilter(){
-        let filtered = this.state.todos.filter(todo => {
-            return (todo.msg.includes(this.state.filterBy) && (todo.date >= this.state.timePeriod.start && todo.date <= this.state.timePeriod.end));
+    const handleFilter = () => {
+        let filtered = todos.filter(todo => {
+            return (todo.msg.includes(filterBy) && (todo.date >= timePeriod.start && todo.date <= timePeriod.end));
         });
-        if (this.state.sorted.byText === 'asc') {
+        if (sorted.byText === 'asc') {
             filtered.sort((a,b) => a.msg > b.msg ? 1 : -1); // asc
-        } else if (this.state.sorted.byText === 'desc') {
+        } else if (sorted.byText === 'desc') {
             filtered.sort((a, b) => a.msg < b.msg ? 1 : -1); // desc
-        } else if (this.state.sorted.byNumber === 'asc') {
+        } else if (sorted.byNumber === 'asc') {
             filtered.sort((a, b) => a.date > b.date ? 1 : -1); // asc
-        } else if (this.state.sorted.byNumber === 'desc') {
+        } else if (sorted.byNumber === 'desc') {
             filtered.sort((a, b) => a.date < b.date ? 1 : -1); // desc
         }
         return filtered;
     }
-    handleSearch(e){
-        this.setState({
-            filterBy: e.target.value,
-        });
+    const handleSearch = e => {
+        setFilterBy(e.target.value);
     }
-    handleTimePeriod(e){
+    const handleTimePeriod = e => {
         e.persist();
-        this.setState(state => {
-            const start = e.target.name === 'start' ? e.target.value : state.timePeriod.start;
-            const end = e.target.name === 'end' 
-                ? (e.target.value !== '' ? e.target.value : state.maxPossibleDate) 
-                : state.timePeriod.end;
-            return {
-                timePeriod: { start, end }
-            }
-        });
+        const start = e.target.name === 'start' ? e.target.value : timePeriod.start;
+        const end = e.target.name === 'end' 
+            ? (e.target.value !== '' ? e.target.value : maxPossibleDate) 
+            : timePeriod.end;
+        setTimePeriod({ start, end });
     }
-    handleSort(e){
+    const handleSort = e => {
         // Не добавил проверку на то, отсортированы ли данные изначально, из-за этого при отсортированных в DESC порядке данных в первый раз произойдет рендер туду в том же порядке
-        this.shouldBeFiltered = this.shouldBeFiltered.bind(this);
-        let todos = (this.shouldBeFiltered() ? this.handleFilter() : [...this.state.todos]);
+        let todosCopy = (shouldBeFiltered() ? handleFilter() : [...todos]);
         if ((e.target.id || e.target.parentNode.id) === 'text'){
-            if (this.state.sorted.byText === 'asc') {
-                todos.sort((a, b) => a.msg < b.msg ? 1 : -1); // desc
-                this.setState(state => {
-                    return {
-                        sorted: {
-                            byText: 'desc',
-                            byNumber: state.sorted.byNumber,
-                        }
-                    }
+            if (sorted.byText === 'asc') {
+                todosCopy.sort((a, b) => a.msg < b.msg ? 1 : -1); // desc
+                setSorted({
+                    byText: 'desc',
+                    byNumber: sorted.byNumber,
                 });
             } else {
-                todos.sort((a,b) => a.msg > b.msg ? 1 : -1); // asc
-                this.setState(state => {
-                    return {
-                        sorted: {
-                            byText: 'asc',
-                            byNumber: state.sorted.byNumber,
-                        }
-                    }
+                todosCopy.sort((a,b) => a.msg > b.msg ? 1 : -1); // asc
+                setSorted({
+                    byText: 'asc',
+                    byNumber: sorted.byNumber,
                 });
             }
         } else {
-            if (this.state.sorted.byNumber === 'asc'){
-                todos.sort((a, b) => a.date < b.date ? 1 : -1); // desc
-                this.setState(state => {
-                    return {
-                        sorted: {
-                            byNumber: 'desc',
-                            byText: state.sorted.byText,
-                        },
-                    }
+            if (sorted.byNumber === 'asc'){
+                todosCopy.sort((a, b) => a.date < b.date ? 1 : -1); // desc
+                setSorted({
+                    byNumber: 'desc',
+                    byText: sorted.byText,
                 });
             } else {
-                todos.sort((a, b) => a.date > b.date ? 1 : -1); // asc
-                this.setState(state => {
-                    return {
-                        sorted: {
-                            byNumber: 'asc',
-                            byText: state.sorted.byText,
-                        },
-                    }
+                todosCopy.sort((a, b) => a.date > b.date ? 1 : -1); // asc
+                setSorted({
+                    byNumber: 'asc',
+                    byText: sorted.byText,
                 });
             }
         }
-        if (!this.shouldBeFiltered()){
-            this.setState({
-                todos,
-            });
+        if (!shouldBeFiltered()){
+            setTodos(todosCopy);
         }
-        return todos;
+        return todosCopy;
     }
-    render(){
         return (
             <div>
                 <div className='todoBuilder'>
                     <form className='form'>
                         <input 
                             name="msg"
-                            className={this.state.msgIsEmpty ? 'input input--empty' : 'input'}
+                            className={msgIsEmpty ? 'input input--empty' : 'input'}
                             type="text"
-                            onChange={this.handleChange}
+                            onChange={handleChange}
                         />
                         <input 
                             name="date"
                             className='input input--date'
                             type="date"
-                            onChange={this.handleChange}
+                            onChange={handleChange}
                         />
                         <button 
-                            onClick={this.handleSubmit}
+                            onClick={handleSubmit}
                             className='btn'
                         ><b>Add</b></button>
                     </form>
-                    <Search handleChange={this.handleSearch}/>
+                    <Search handleChange={handleSearch}/>
                     <Menu 
-                        todos={this.shouldBeFiltered() ? this.handleFilter() : this.state.todos}
-                        handleSort={this.handleSort}
-                        handleTimePeriod={this.handleTimePeriod}
+                        todos={shouldBeFiltered() ? handleFilter() : todos}
+                        handleSort={handleSort}
+                        handleTimePeriod={handleTimePeriod}
                     />
                     <TodoList
-                        todos={this.shouldBeFiltered() ? this.handleFilter() : this.state.todos}
-                        handleDelete={this.handleDelete}
-                        handleComplete={this.handleComplete}
+                        todos={shouldBeFiltered() ? handleFilter() : todos}
+                        handleDelete={handleDelete}
+                        handleComplete={handleComplete}
                     />
                 </div>
             </div>
         );
-    }
 }
-
 export default TodoBuilder;
